@@ -32,8 +32,6 @@ func (s Shipment) checkInvariants() error {
 	return nil
 }
 
-func (Address) ImplAsValueObject() {}
-
 func NewAddress(firstname, lastname, state, city, street string) Address {
 	return Address{
 		firstname: firstname,
@@ -42,6 +40,11 @@ func NewAddress(firstname, lastname, state, city, street string) Address {
 		city:      city,
 		street:    street,
 	}
+}
+func (Address) ImplAsValueObject() {}
+
+func (a *Address) SetLastName(lastName string) {
+	a.lastname = lastName
 }
 
 func (a Address) ChangeFirstname(firstname string) Address {

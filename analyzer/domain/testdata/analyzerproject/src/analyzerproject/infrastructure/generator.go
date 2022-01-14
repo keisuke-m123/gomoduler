@@ -8,13 +8,12 @@ type (
 	ShipmentCodeGenerator struct{}
 )
 
-func (*OrderIDGenerator) ImplAsValueObjectGenerator()      {}
 func (*OrderNumberGenerator) ImplAsValueObjectGenerator()  {}
 func (*ShipmentCodeGenerator) ImplAsValueObjectGenerator() {}
 
 func (*OrderIDGenerator) GenerateOrderID() domain.OrderID {
 	id := ""
-	return domain.OrderID(id)
+	return domain.OrderID(id) // want "ValueObjectを実装した構造体はValueObjectが存在するパッケージ以外から直接生成することはできません。"
 }
 
 func (*OrderNumberGenerator) GenerateOrderNumber() domain.OrderNumber {

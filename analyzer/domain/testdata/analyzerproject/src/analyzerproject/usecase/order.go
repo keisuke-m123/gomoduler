@@ -13,7 +13,7 @@ type OrderUsecase struct {
 }
 
 func (o *OrderUsecase) BadPlaceOrder() error {
-	order := &domain.Order{}
+	order := &domain.Order{} // want "Entityを実装した構造体はEntityが存在するパッケージ以外からcomposite literalで生成することはできません。"
 	if err := o.orderRepository.Save(order); err != nil {
 		return fmt.Errorf("failed to save order: %w", err)
 	}
@@ -21,14 +21,16 @@ func (o *OrderUsecase) BadPlaceOrder() error {
 }
 
 func (o *OrderUsecase) BadPlaceOrder2() error {
-	address := domain.Address{}
+	address := domain.Address{} // want "ValueObjectを実装した構造体はValueObjectが存在するパッケージ以外からcomposite literalで生成することはできません。"
 	ship, err := domain.NewShipment(o.shipmentCodeGenerator.GenerateShipmentCode(), address)
 	if err != nil {
 		return fmt.Errorf("failed to create shipment: %w", err)
 	}
 
 	number := ""
-	order, err := domain.NewOrder(domain.OrderID(number), domain.OrderNumber(number), []domain.Shipment{ship})
+	orderID := domain.OrderID(number)         // want "ValueObjectを実装した構造体はValueObjectが存在するパッケージ以外から直接生成することはできません。"
+	orderNumber := domain.OrderNumber(number) // want "ValueObjectを実装した構造体はValueObjectが存在するパッケージ以外から直接生成することはできません。"
+	order, err := domain.NewOrder(orderID, orderNumber, []domain.Shipment{ship})
 	if err != nil {
 		return fmt.Errorf("failed to create order: %w", err)
 	}
