@@ -23,7 +23,7 @@ type (
 		dm *definedTypeMap
 	}
 
-	FindAnnotationsResult struct {
+	Annotations struct {
 		foundEntities             *structMap
 		foundValueObjects         *structAndDefinedTypeMap
 		foundValueObjectGenerator *structMap
@@ -83,7 +83,7 @@ func (v *structAndDefinedTypeMap) getDefinedType(t types.Type) (*gocode.DefinedT
 	return v.dm.get(t)
 }
 
-func FindAnnotations(path string) *FindAnnotationsResult {
+func FindAnnotations(path string) *Annotations {
 	r, err := gocode.LoadRelations(&gocode.LoadOptions{
 		FileSystem:  afero.NewOsFs(),
 		Directories: []string{path},
@@ -92,26 +92,26 @@ func FindAnnotations(path string) *FindAnnotationsResult {
 	if err != nil {
 		panic(err)
 	}
-	return &FindAnnotationsResult{
+	return &Annotations{
 		foundEntities:             findEntities(r),
 		foundValueObjects:         findValueObjects(r),
 		foundValueObjectGenerator: findValueObjectGenerator(r),
 	}
 }
 
-func (f *FindAnnotationsResult) GetEntity(t types.Type) (*gocode.Struct, bool) {
+func (f *Annotations) GetEntity(t types.Type) (*gocode.Struct, bool) {
 	return f.foundEntities.get(t)
 }
 
-func (f *FindAnnotationsResult) GetValueObjectStruct(t types.Type) (*gocode.Struct, bool) {
+func (f *Annotations) GetValueObjectStruct(t types.Type) (*gocode.Struct, bool) {
 	return f.foundValueObjects.getStruct(t)
 }
 
-func (f *FindAnnotationsResult) GetValueObjectDefinedType(t types.Type) (*gocode.DefinedType, bool) {
+func (f *Annotations) GetValueObjectDefinedType(t types.Type) (*gocode.DefinedType, bool) {
 	return f.foundValueObjects.getDefinedType(t)
 }
 
-func (f *FindAnnotationsResult) GetValueObjectGenerator(t types.Type) (*gocode.Struct, bool) {
+func (f *Annotations) GetValueObjectGenerator(t types.Type) (*gocode.Struct, bool) {
 	return f.foundValueObjectGenerator.get(t)
 }
 

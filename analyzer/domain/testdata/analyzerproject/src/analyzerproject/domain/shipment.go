@@ -4,7 +4,8 @@ type (
 	ShipmentCode string
 
 	Shipment struct {
-		code ShipmentCode
+		code    ShipmentCode
+		address Address
 	}
 
 	ShipmentList struct {
@@ -24,7 +25,10 @@ func (ShipmentCode) ImplAsIdentifier()  {}
 func (ShipmentCode) ImplAsValueObject() {}
 
 func NewShipment(code ShipmentCode, address Address) (Shipment, error) {
-	return Shipment{code: code}, nil
+	return Shipment{
+		code:    code,
+		address: address,
+	}, nil
 }
 func (Shipment) ImplAsEntity() {}
 
@@ -43,8 +47,12 @@ func NewAddress(firstname, lastname, state, city, street string) Address {
 }
 func (Address) ImplAsValueObject() {}
 
-func (a *Address) SetLastName(lastName string) {
-	a.lastname = lastName
+func (a *Address) SetLastName(lastname string) { // want "値オブジェクトのメソッドは値レシーバである必要があります。"
+	a.lastname = lastname
+}
+
+func (a Address) SetFirstName(firstname string) {
+	a.firstname = firstname
 }
 
 func (a Address) ChangeFirstname(firstname string) Address {
