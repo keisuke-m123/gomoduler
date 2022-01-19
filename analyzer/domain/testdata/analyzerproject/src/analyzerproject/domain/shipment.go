@@ -18,6 +18,7 @@ type (
 		state     string
 		city      string
 		street    string
+		Exported  string // want "ValueObjectはExportedなフィールドを定義することはできません。"
 	}
 )
 

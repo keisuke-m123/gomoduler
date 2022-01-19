@@ -5,20 +5,20 @@ import (
 	"go/types"
 
 	"github.com/keisuke-m123/gomoduler/analyzer/astutil"
+	"github.com/keisuke-m123/gomoduler/analyzer/domain/checker"
 	"github.com/keisuke-m123/gomoduler/annotation"
-	"golang.org/x/tools/go/analysis"
 )
 
 type (
 	ImmutableChecker struct {
-		pass        *analysis.Pass
+		passInfo    *checker.PassInfo
 		annotations *annotation.Annotations
 	}
 )
 
-func NewImmutableChecker(pass *analysis.Pass, annotations *annotation.Annotations) *ImmutableChecker {
+func NewImmutableChecker(passInfo *checker.PassInfo, annotations *annotation.Annotations) *ImmutableChecker {
 	return &ImmutableChecker{
-		pass:        pass,
+		passInfo:    passInfo,
 		annotations: annotations,
 	}
 }
@@ -52,12 +52,12 @@ func (i *ImmutableChecker) checkPointerReceiver(nodeInfo *astutil.NodeInfo) {
 	}
 
 	field := fd.Recv.List[0]
-	t, ok := i.pass.TypesInfo.TypeOf(field.Type).(*types.Pointer)
+	t, ok := i.passInfo.Pass().TypesInfo.TypeOf(field.Type).(*types.Pointer)
 	if !ok {
 		return
 	}
 
 	if _, ok := i.annotations.GetValueObjectStruct(t.Elem()); ok {
-		i.pass.Reportf(field.Pos(), "値オブジェクトのメソッドは値レシーバである必要があります。")
+		i.passInfo.Pass().Reportf(field.Pos(), "値オブジェクトのメソッドは値レシーバである必要があります。")
 	}
 }

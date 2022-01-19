@@ -2,6 +2,7 @@ package domain
 
 import (
 	"github.com/keisuke-m123/gomoduler/analyzer/astutil"
+	"github.com/keisuke-m123/gomoduler/analyzer/domain/checker"
 	"github.com/keisuke-m123/gomoduler/analyzer/domain/entity"
 	"github.com/keisuke-m123/gomoduler/analyzer/domain/valueobject"
 	"github.com/keisuke-m123/gomoduler/annotation"
@@ -30,11 +31,16 @@ func NewEntityAnalyzer(domainPath string) *analysis.Analyzer {
 }
 
 func (a *analyzer) analyze(pass *analysis.Pass) (interface{}, error) {
+	passInfo := checker.NewPassInfo(pass)
 	astutil.NewInspector(pass.Files, []astutil.InspectionProcessor{
-		entity.NewInitializationChecker(pass, a.annotations),
-		valueobject.NewInitializationChecker(pass, a.annotations),
-		valueobject.NewImmutableChecker(pass, a.annotations),
+		entity.NewInitializationChecker(passInfo, a.annotations),
+		valueobject.NewInitializationChecker(passInfo, a.annotations),
+		valueobject.NewImmutableChecker(passInfo, a.annotations),
 	}).WithStack()
+
+	entity.NewExportFieldChecker(passInfo).Check()
+	entity.NewIdentifierChecker(passInfo, a.annotations).Check()
+	valueobject.NewExportedFieldChecker(passInfo).Check()
 
 	return nil, nil
 }

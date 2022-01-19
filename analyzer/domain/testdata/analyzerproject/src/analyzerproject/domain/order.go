@@ -9,10 +9,12 @@ type (
 
 	OrderNumber string
 
-	Order struct {
+	Order struct { // want "identifierを実装するフィールドは1つのみ含む必要があります。"
 		id        OrderID
+		subId     OrderID
 		number    OrderNumber
 		shipments []Shipment
+		Exported  string // want "EntityはExportedなフィールドを定義することはできません。"
 	}
 
 	OrderRepository interface {

@@ -25,8 +25,9 @@ type (
 
 	Annotations struct {
 		foundEntities             *structMap
-		foundValueObjects         *structAndDefinedTypeMap
 		foundValueObjectGenerator *structMap
+		foundValueObjects         *structAndDefinedTypeMap
+		foundIdentifiers          *structAndDefinedTypeMap
 	}
 )
 
@@ -96,11 +97,20 @@ func FindAnnotations(path string) *Annotations {
 		foundEntities:             findEntities(r),
 		foundValueObjects:         findValueObjects(r),
 		foundValueObjectGenerator: findValueObjectGenerator(r),
+		foundIdentifiers:          findIdentifiers(r),
 	}
 }
 
 func (f *Annotations) GetEntity(t types.Type) (*gocode.Struct, bool) {
 	return f.foundEntities.get(t)
+}
+
+func (f *Annotations) GetEntitiesAll() []*gocode.Struct {
+	var structs []*gocode.Struct
+	for _, st := range f.foundEntities.m {
+		structs = append(structs, st)
+	}
+	return structs
 }
 
 func (f *Annotations) GetValueObjectStruct(t types.Type) (*gocode.Struct, bool) {
@@ -115,6 +125,22 @@ func (f *Annotations) GetValueObjectGenerator(t types.Type) (*gocode.Struct, boo
 	return f.foundValueObjectGenerator.get(t)
 }
 
+func (f *Annotations) GetIdentifierStruct(t types.Type) (*gocode.Struct, bool) {
+	return f.foundIdentifiers.getStruct(t)
+}
+
+func (f *Annotations) GetIdentifierDefinedType(t types.Type) (*gocode.DefinedType, bool) {
+	return f.foundIdentifiers.getDefinedType(t)
+}
+
+func FindEntityStructs(r *gocode.Relations) []*gocode.Struct {
+	var structs []*gocode.Struct
+	for _, st := range findEntities(r).m {
+		structs = append(structs, st)
+	}
+	return structs
+}
+
 func findEntities(r *gocode.Relations) *structMap {
 	sm := newStructMap()
 	for _, s := range r.Structs().StructAll() {
@@ -123,6 +149,14 @@ func findEntities(r *gocode.Relations) *structMap {
 		}
 	}
 	return sm
+}
+
+func FindValueObjectStructs(r *gocode.Relations) []*gocode.Struct {
+	var structs []*gocode.Struct
+	for _, st := range findValueObjects(r).sm.m {
+		structs = append(structs, st)
+	}
+	return structs
 }
 
 func findValueObjects(r *gocode.Relations) *structAndDefinedTypeMap {
@@ -148,4 +182,19 @@ func findValueObjectGenerator(r *gocode.Relations) *structMap {
 		}
 	}
 	return sm
+}
+
+func findIdentifiers(r *gocode.Relations) *structAndDefinedTypeMap {
+	ids := newStructAndDefinedTypeMap()
+	for _, s := range r.Structs().StructAll() {
+		if s.Implements(relations.GoCodeInterfaceIdentifier()) {
+			ids.addStruct(s)
+		}
+	}
+	for _, d := range r.DefinedTypes().DefinedTypeAll() {
+		if d.Implements(relations.GoCodeInterfaceIdentifier()) {
+			ids.addDefinedType(d)
+		}
+	}
+	return ids
 }

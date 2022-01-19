@@ -4,20 +4,20 @@ import (
 	"go/ast"
 
 	"github.com/keisuke-m123/gomoduler/analyzer/astutil"
+	"github.com/keisuke-m123/gomoduler/analyzer/domain/checker"
 	"github.com/keisuke-m123/gomoduler/annotation"
-	"golang.org/x/tools/go/analysis"
 )
 
 type (
 	InitializationChecker struct {
-		pass        *analysis.Pass
+		passInfo    *checker.PassInfo
 		annotations *annotation.Annotations
 	}
 )
 
-func NewInitializationChecker(pass *analysis.Pass, annotations *annotation.Annotations) *InitializationChecker {
+func NewInitializationChecker(passInfo *checker.PassInfo, annotations *annotation.Annotations) *InitializationChecker {
 	return &InitializationChecker{
-		pass:        pass,
+		passInfo:    passInfo,
 		annotations: annotations,
 	}
 }
@@ -30,12 +30,12 @@ func (*InitializationChecker) Types() []ast.Node {
 
 func (e *InitializationChecker) InspectionFunc() astutil.InspectionFunc {
 	return func(nodeInfo *astutil.NodeInfo) (proceed bool) {
-		e.checkInitialization(nodeInfo)
+		e.check(nodeInfo)
 		return true
 	}
 }
 
-func (e *InitializationChecker) checkInitialization(nodeInfo *astutil.NodeInfo) {
+func (e *InitializationChecker) check(nodeInfo *astutil.NodeInfo) {
 	if !nodeInfo.Push() {
 		return
 	}
@@ -43,13 +43,13 @@ func (e *InitializationChecker) checkInitialization(nodeInfo *astutil.NodeInfo) 
 	switch n := nodeInfo.Current().(type) {
 	case *ast.CompositeLit:
 		if e.entityCompositeLiteral(n) {
-			e.pass.Reportf(n.Pos(), "Entityを実装した構造体はEntityが存在するパッケージ以外からcomposite literalで生成することはできません。")
+			e.passInfo.Pass().Reportf(n.Pos(), "Entityを実装した構造体はEntityが存在するパッケージ以外からcomposite literalで生成することはできません。")
 		}
 	}
 }
 
 func (e *InitializationChecker) entityCompositeLiteral(cl *ast.CompositeLit) bool {
-	t := e.pass.TypesInfo.TypeOf(cl)
+	t := e.passInfo.Pass().TypesInfo.TypeOf(cl)
 	if t == nil {
 		return false
 	}
@@ -59,5 +59,5 @@ func (e *InitializationChecker) entityCompositeLiteral(cl *ast.CompositeLit) boo
 		return false
 	}
 
-	return s.PackageSummary().Path().String() != e.pass.Pkg.Path()
+	return s.PackageSummary().Path().String() != e.passInfo.Pass().Pkg.Path()
 }

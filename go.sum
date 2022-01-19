@@ -120,6 +120,12 @@ github.com/keisuke-m123/goanalyzer v0.0.0-20220109113647-0f2064376f38 h1:0R8R1Bu
 github.com/keisuke-m123/goanalyzer v0.0.0-20220109113647-0f2064376f38/go.mod h1:YZ5ZzbMB4aPj5ncR09+gfknk3SmoYyMvP0rwYRTDIFU=
 github.com/keisuke-m123/goanalyzer v0.0.0-20220110113039-7cd162783d71 h1:b6PvPV8ULMWPd9XTTbrfIILY/ALA92dW+TZ/CZPq02s=
 github.com/keisuke-m123/goanalyzer v0.0.0-20220110113039-7cd162783d71/go.mod h1:YZ5ZzbMB4aPj5ncR09+gfknk3SmoYyMvP0rwYRTDIFU=
+github.com/keisuke-m123/goanalyzer v0.0.0-20220119142647-78e01abcab11 h1:LrxwgBHZWKb4+Y04ij5UVpX8W8MfBisGSsu60rPdgDU=
+github.com/keisuke-m123/goanalyzer v0.0.0-20220119142647-78e01abcab11/go.mod h1:YZ5ZzbMB4aPj5ncR09+gfknk3SmoYyMvP0rwYRTDIFU=
+github.com/keisuke-m123/goanalyzer v0.0.0-20220119155634-6a45c1e6ca98 h1:g4ck9ntc7ZRdVFmUqBax7IE65zFHiWkCKIgXsz8BaLo=
+github.com/keisuke-m123/goanalyzer v0.0.0-20220119155634-6a45c1e6ca98/go.mod h1:YZ5ZzbMB4aPj5ncR09+gfknk3SmoYyMvP0rwYRTDIFU=
+github.com/keisuke-m123/goanalyzer v0.0.0-20220119160112-5b59b90a21e2 h1:xaI+5/oMMZxCWRBmGTJY45d/IKzvVcNhbqsmIdNmc7E=
+github.com/keisuke-m123/goanalyzer v0.0.0-20220119160112-5b59b90a21e2/go.mod h1:YZ5ZzbMB4aPj5ncR09+gfknk3SmoYyMvP0rwYRTDIFU=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/kr/fs v0.1.0/go.mod h1:FFnZGqtBN9Gxj7eW1uZ42v5BccTP0vu6NEaFoC2HwRg=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=

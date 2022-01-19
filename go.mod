@@ -3,7 +3,7 @@ module github.com/keisuke-m123/gomoduler
 go 1.17
 
 require (
-	github.com/keisuke-m123/goanalyzer v0.0.0-20220110113039-7cd162783d71
+	github.com/keisuke-m123/goanalyzer v0.0.0-20220119160112-5b59b90a21e2
 	golang.org/x/tools v0.1.8
 )
 

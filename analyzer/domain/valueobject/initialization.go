@@ -5,20 +5,20 @@ import (
 	"strings"
 
 	"github.com/keisuke-m123/gomoduler/analyzer/astutil"
+	"github.com/keisuke-m123/gomoduler/analyzer/domain/checker"
 	"github.com/keisuke-m123/gomoduler/annotation"
-	"golang.org/x/tools/go/analysis"
 )
 
 type (
 	InitializationChecker struct {
-		pass        *analysis.Pass
+		passInfo    *checker.PassInfo
 		annotations *annotation.Annotations
 	}
 )
 
-func NewInitializationChecker(pass *analysis.Pass, annotations *annotation.Annotations) *InitializationChecker {
+func NewInitializationChecker(passInfo *checker.PassInfo, annotations *annotation.Annotations) *InitializationChecker {
 	return &InitializationChecker{
-		pass:        pass,
+		passInfo:    passInfo,
 		annotations: annotations,
 	}
 }
@@ -50,7 +50,7 @@ func (v *InitializationChecker) checkInitialization(nodeInfo *astutil.NodeInfo) 
 		if v.inGeneratorFunc(nodeInfo) {
 			return
 		}
-		v.pass.Reportf(n.Pos(), "ValueObjectを実装した構造体はValueObjectが存在するパッケージ以外からcomposite literalで生成することはできません。")
+		v.passInfo.Pass().Reportf(n.Pos(), "ValueObjectを実装した構造体はValueObjectが存在するパッケージ以外からcomposite literalで生成することはできません。")
 	case *ast.CallExpr:
 		if !v.definedTypeInitialization(n) {
 			return
@@ -58,12 +58,12 @@ func (v *InitializationChecker) checkInitialization(nodeInfo *astutil.NodeInfo) 
 		if v.inGeneratorFunc(nodeInfo) {
 			return
 		}
-		v.pass.Reportf(n.Pos(), "ValueObjectを実装した構造体はValueObjectが存在するパッケージ以外から直接生成することはできません。")
+		v.passInfo.Pass().Reportf(n.Pos(), "ValueObjectを実装した構造体はValueObjectが存在するパッケージ以外から直接生成することはできません。")
 	}
 }
 
 func (v *InitializationChecker) compositeLiteralInitialization(cl *ast.CompositeLit) bool {
-	t := v.pass.TypesInfo.TypeOf(cl)
+	t := v.passInfo.Pass().TypesInfo.TypeOf(cl)
 	if t == nil {
 		return false
 	}
@@ -73,11 +73,11 @@ func (v *InitializationChecker) compositeLiteralInitialization(cl *ast.Composite
 		return false
 	}
 
-	return s.PackageSummary().Path().String() != v.pass.Pkg.Path()
+	return s.PackageSummary().Path().String() != v.passInfo.Pass().Pkg.Path()
 }
 
 func (v *InitializationChecker) definedTypeInitialization(ce *ast.CallExpr) bool {
-	t := v.pass.TypesInfo.TypeOf(ce.Fun)
+	t := v.passInfo.Pass().TypesInfo.TypeOf(ce.Fun)
 	if t == nil {
 		return false
 	}
@@ -92,7 +92,7 @@ func (v *InitializationChecker) definedTypeInitialization(ce *ast.CallExpr) bool
 		return false
 	}
 
-	return d.PackageSummary().Path().String() != v.pass.Pkg.Path()
+	return d.PackageSummary().Path().String() != v.passInfo.Pass().Pkg.Path()
 }
 
 func (v *InitializationChecker) inGeneratorFunc(nodeInfo *astutil.NodeInfo) bool {
@@ -132,7 +132,7 @@ func (v *InitializationChecker) isGenerator(expr ast.Expr) bool {
 	case *ast.StarExpr:
 		return v.isGenerator(t.X)
 	default:
-		df := v.pass.TypesInfo.TypeOf(t)
+		df := v.passInfo.Pass().TypesInfo.TypeOf(t)
 		if df == nil {
 			return false
 		}
