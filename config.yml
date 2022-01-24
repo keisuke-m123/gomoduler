@@ -1,0 +1,2 @@
+domainConfig:
+  paths: ["./analyzer"]

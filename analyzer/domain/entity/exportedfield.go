@@ -20,6 +20,9 @@ func NewExportFieldChecker(passInfo *checker.PassInfo) *ExportFieldChecker {
 func (e ExportFieldChecker) Check() {
 	for _, entity := range annotation.FindEntityStructs(e.passInfo.Relations()) {
 		for _, f := range entity.Fields() {
+			if f.Embedded() && annotation.DomainStruct(f.Type()) {
+				continue
+			}
 			if f.Exported() {
 				e.passInfo.Pass().Reportf(f.DefinedPos(), "EntityはExportedなフィールドを定義することはできません。")
 			}

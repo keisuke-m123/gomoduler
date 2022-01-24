@@ -8,11 +8,11 @@ import (
 	"golang.org/x/tools/go/analysis/analysistest"
 )
 
-func TestEntityFinder(t *testing.T) {
+func TestDomainAnalyzer(t *testing.T) {
 	analysistest.Run(
 		t,
 		path.Join(analysistest.TestData(), "analyzerproject"),
-		domain.NewEntityAnalyzer("./testdata/analyzerproject/src/analyzerproject/"),
+		domain.NewDomainAnalyzer([]string{"./testdata/analyzerproject/src/analyzerproject/"}),
 		"./...",
 	)
 }

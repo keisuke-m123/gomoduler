@@ -1,2 +1,1 @@
-
-
+* Repositoryのためのメソッド(データ保存のためのGetter, Reconstruct)を呼び出していないかチェック https://blog.j5ik2o.me/entry/2018/08/14/134125

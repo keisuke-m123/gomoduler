@@ -3,9 +3,14 @@ package domain
 type (
 	ShipmentCode string
 
+	ShippingMethod struct {
+		Name string
+	}
+
 	Shipment struct {
-		code    ShipmentCode
-		address Address
+		ShippingMethod // want "EntityはExportedなフィールドを定義することはできません。"
+		code           ShipmentCode
+		address        Address
 	}
 
 	ShipmentList struct {

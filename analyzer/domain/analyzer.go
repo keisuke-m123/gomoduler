@@ -17,7 +17,7 @@ type (
 	}
 )
 
-func NewEntityAnalyzer(domainPath string) *analysis.Analyzer {
+func NewDomainAnalyzer(domainPath []string) *analysis.Analyzer {
 	ea := &analyzer{
 		analyzer: &analysis.Analyzer{
 			Name:     "gomoduler-domain",
@@ -38,9 +38,13 @@ func (a *analyzer) analyze(pass *analysis.Pass) (interface{}, error) {
 		valueobject.NewImmutableChecker(passInfo, a.annotations),
 	}).WithStack()
 
-	entity.NewExportFieldChecker(passInfo).Check()
-	entity.NewIdentifierChecker(passInfo, a.annotations).Check()
-	valueobject.NewExportedFieldChecker(passInfo).Check()
+	for _, c := range []checker.SimpleChecker{
+		entity.NewExportFieldChecker(passInfo),
+		entity.NewIdentifierChecker(passInfo, a.annotations),
+		valueobject.NewExportedFieldChecker(passInfo),
+	} {
+		c.Check()
+	}
 
 	return nil, nil
 }

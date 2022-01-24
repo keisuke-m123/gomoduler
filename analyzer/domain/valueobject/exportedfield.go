@@ -18,6 +18,9 @@ func NewExportedFieldChecker(passInfo *checker.PassInfo) *ExportedFieldChecker {
 func (e *ExportedFieldChecker) Check() {
 	for _, vo := range annotation.FindValueObjectStructs(e.passInfo.Relations()) {
 		for _, f := range vo.Fields() {
+			if f.Embedded() && annotation.DomainStruct(f.Type()) {
+				continue
+			}
 			if f.Exported() {
 				e.passInfo.Pass().Reportf(f.DefinedPos(), "ValueObjectはExportedなフィールドを定義することはできません。")
 			}

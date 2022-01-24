@@ -28,7 +28,7 @@ func (ic *IdentifierChecker) Check() {
 
 func (ic *IdentifierChecker) checkEntity(entity *gocode.Struct) {
 	if !ic.containsIdentifierFieldOnlyOne(entity) {
-		ic.passInfo.Pass().Reportf(entity.DefinedPos(), "identifierを実装するフィールドは1つのみ含む必要があります。")
+		ic.passInfo.Pass().Reportf(entity.DefinedPos(), "EntityはIdentifierを実装するフィールドは1つのみ含む必要があります。")
 	}
 }
 

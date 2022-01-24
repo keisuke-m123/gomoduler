@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/keisuke-m123/goanalyzer/gocode"
-	"github.com/keisuke-m123/gomoduler/internal/relations"
 	"github.com/spf13/afero"
 )
 
@@ -84,10 +83,10 @@ func (v *structAndDefinedTypeMap) getDefinedType(t types.Type) (*gocode.DefinedT
 	return v.dm.get(t)
 }
 
-func FindAnnotations(path string) *Annotations {
+func FindAnnotations(paths []string) *Annotations {
 	r, err := gocode.LoadRelations(&gocode.LoadOptions{
 		FileSystem:  afero.NewOsFs(),
-		Directories: []string{path},
+		Directories: paths,
 		Recursive:   true,
 	})
 	if err != nil {
@@ -144,7 +143,7 @@ func FindEntityStructs(r *gocode.Relations) []*gocode.Struct {
 func findEntities(r *gocode.Relations) *structMap {
 	sm := newStructMap()
 	for _, s := range r.Structs().StructAll() {
-		if s.Implements(relations.GoCodeInterfaceEntity()) {
+		if s.ImplementsGoTypes(entityInterfaceType) {
 			sm.add(s)
 		}
 	}
@@ -162,12 +161,12 @@ func FindValueObjectStructs(r *gocode.Relations) []*gocode.Struct {
 func findValueObjects(r *gocode.Relations) *structAndDefinedTypeMap {
 	sdm := newStructAndDefinedTypeMap()
 	for _, s := range r.Structs().StructAll() {
-		if s.Implements(relations.GoCodeInterfaceValueObject()) {
+		if s.ImplementsGoTypes(valueObjectInterfaceType) {
 			sdm.addStruct(s)
 		}
 	}
 	for _, d := range r.DefinedTypes().DefinedTypeAll() {
-		if d.Implements(relations.GoCodeInterfaceValueObject()) {
+		if d.ImplementsGoTypes(valueObjectInterfaceType) {
 			sdm.addDefinedType(d)
 		}
 	}
@@ -177,7 +176,7 @@ func findValueObjects(r *gocode.Relations) *structAndDefinedTypeMap {
 func findValueObjectGenerator(r *gocode.Relations) *structMap {
 	sm := newStructMap()
 	for _, s := range r.Structs().StructAll() {
-		if s.Implements(relations.GoCodeInterfaceValueObjectGenerator()) {
+		if s.ImplementsGoTypes(valueObjectGeneratorInterfaceType) {
 			sm.add(s)
 		}
 	}
@@ -187,12 +186,12 @@ func findValueObjectGenerator(r *gocode.Relations) *structMap {
 func findIdentifiers(r *gocode.Relations) *structAndDefinedTypeMap {
 	ids := newStructAndDefinedTypeMap()
 	for _, s := range r.Structs().StructAll() {
-		if s.Implements(relations.GoCodeInterfaceIdentifier()) {
+		if s.ImplementsGoTypes(identifierInterfaceType) {
 			ids.addStruct(s)
 		}
 	}
 	for _, d := range r.DefinedTypes().DefinedTypeAll() {
-		if d.Implements(relations.GoCodeInterfaceIdentifier()) {
+		if d.ImplementsGoTypes(identifierInterfaceType) {
 			ids.addDefinedType(d)
 		}
 	}

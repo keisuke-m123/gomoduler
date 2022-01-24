@@ -9,7 +9,7 @@ type (
 
 	OrderNumber string
 
-	Order struct { // want "identifierを実装するフィールドは1つのみ含む必要があります。"
+	Order struct { // want "EntityはIdentifierを実装するフィールドは1つのみ含む必要があります。"
 		id        OrderID
 		subId     OrderID
 		number    OrderNumber
